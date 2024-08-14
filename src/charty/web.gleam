@@ -1,9 +1,10 @@
+import charty/models/file.{type File}
 import gleam/bool
 import gleam/string_builder
 import wisp
 
 pub type Context {
-  Context(static_directory: String, items: List(String))
+  Context(static_directory: String, files: List(File))
 }
 
 pub fn middleware(

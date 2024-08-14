@@ -7,7 +7,7 @@ import wisp
 pub fn main() {
   wisp.configure_logger()
 
-  let ctx = Context(static_directory: static_directory(), items: [])
+  let ctx = Context(static_directory: static_directory(), files: [])
 
   let handler = router.handle_request(_, ctx)
 

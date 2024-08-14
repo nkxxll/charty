@@ -1,18 +1,35 @@
+import charty/api
+import charty/api/files_middleware.{files_middleware}
 import charty/pages
 import charty/pages/layout.{layout}
 import charty/web.{type Context}
+import gleam/http
 import lustre/element
 import wisp.{type Request, type Response}
 
 pub fn handle_request(req: Request, ctx: Context) -> Response {
   use _req <- web.middleware(req, ctx)
+  use ctx <- files_middleware(req, ctx)
   case wisp.path_segments(req) {
     // Homepage
     [] -> {
-      [pages.home()]
+      [pages.home(ctx.files)]
       |> layout
       |> element.to_document_string_builder
       |> wisp.html_response(200)
+    }
+
+    // Upload
+    ["upload"] -> {
+      [pages.upload()]
+      |> layout
+      |> element.to_document_string_builder
+      |> wisp.html_response(200)
+    }
+
+    ["api", "upload"] -> {
+      use <- wisp.require_method(req, http.Post)
+      api.upload(req, ctx)
     }
 
     // All the empty responses

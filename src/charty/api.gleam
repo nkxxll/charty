@@ -13,15 +13,19 @@ pub fn upload(req: Request, ctx: Context) {
   use form <- wisp.require_form(req)
 
   let current_files = ctx.files
+  io.debug(current_files)
+  io.debug(form.values)
+  io.debug(form.files)
 
   let result = {
     use file_name <- result.try(list.key_find(form.values, "file_name"))
-    use upfile <- result.try(list.key_find(form.files, "file_content"))
-    io.debug("upload file path: " <> upfile.path)
-    let path = basedir <> file_name
+    // FIXME: this does not work because the file is not transmitted
+    use upfile <- result.try(list.key_find(form.values, "file_content"))
+    io.debug("upload file path: " <> upfile)
+    let path = basedir <> "/" <> file_name
     let new_item = create_file(file_name, path)
-    // copy the file to files dir
-    let _ = copy_file(upfile.path, path)
+    // copy the file to files dir does not work
+    let _ = copy_file(upfile, path)
     list.append(current_files, [new_item])
     |> todos_to_json
     |> Ok

@@ -1,4 +1,4 @@
-import lustre/attribute.{autofocus, class, name, placeholder, type_}
+import lustre/attribute.{autofocus, class, name, placeholder, type_, value}
 import lustre/element.{type Element}
 import lustre/element/html.{form, input}
 
@@ -21,6 +21,7 @@ fn file_upload() -> Element(t) {
         autofocus(True),
       ]),
       input([name("file_content"), type_("file"), class("add_file")]),
+      input([type_("submit"), class("add_file"), value("submit")]),
     ],
   )
 }

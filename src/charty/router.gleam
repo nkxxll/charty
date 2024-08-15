@@ -4,6 +4,7 @@ import charty/pages
 import charty/pages/layout.{layout}
 import charty/web.{type Context}
 import gleam/http
+import gleam/io
 import lustre/element
 import wisp.{type Request, type Response}
 
@@ -28,6 +29,7 @@ pub fn handle_request(req: Request, ctx: Context) -> Response {
     }
 
     ["api", "upload"] -> {
+      io.debug("calling api upload")
       use <- wisp.require_method(req, http.Post)
       api.upload(req, ctx)
     }

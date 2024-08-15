@@ -1,3 +1,5 @@
+pub const basedir = "./files"
+
 /// file is the data structure for a file
 /// a file is stored at ./files/<title>
 /// for now file types are svgs

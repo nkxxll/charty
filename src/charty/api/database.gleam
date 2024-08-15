@@ -1,8 +1,7 @@
 /// this is the database mock
-import charty/models/file.{type File}
-
-// this is a lib for file stuff in gleam should use this
-import simplefile
+import charty/models/file.{type File, basedir}
+import gleam/io
+import simplifile.{create_directory, is_directory, read_bits, write_bits}
 
 /// save a file in the file system
 /// the file is uploaded via a form
@@ -10,8 +9,30 @@ import simplefile
 pub fn save(file: File, content: BitArray) {
   // A function to write content to a file
   let path = file.path
-  // ensure directory is there
-  // write the contents to the file
-  // -> ok nothing
-  // -> error return error i don't care for now
+  let id_res = is_directory(basedir)
+  case id_res {
+    Error(_) -> Nil
+    Ok(is_dir) -> {
+      case is_dir {
+        True -> Nil
+        False -> {
+          let _ = create_directory(basedir)
+          Nil
+        }
+      }
+    }
+  }
+
+  let res = content |> write_bits(to: path)
+  case res {
+    Ok(_) -> Nil
+    Error(_) -> {
+      io.debug("error writing the file")
+      Nil
+    }
+  }
+}
+
+pub fn read(file: File) -> Result(BitArray, simplifile.FileError) {
+  read_bits(file.path)
 }

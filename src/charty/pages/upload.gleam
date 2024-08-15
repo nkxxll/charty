@@ -15,7 +15,7 @@ fn file_upload() -> Element(t) {
     ],
     [
       input([
-        name("file_title"),
+        name("file_name"),
         class("add_file"),
         placeholder("How should your image be called?"),
         autofocus(True),

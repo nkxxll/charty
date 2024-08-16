@@ -20,6 +20,12 @@ pub fn handle_request(req: Request, ctx: Context) -> Response {
       |> wisp.html_response(200)
     }
 
+    ["builder"] -> {
+      [pages.builder(ctx.files)]
+      |> layout
+      |> element.to_document_string_builder
+      |> wisp.html_response(200)
+    }
     // Upload
     ["upload"] -> {
       [pages.upload()]

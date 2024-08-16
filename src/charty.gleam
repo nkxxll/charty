@@ -1,3 +1,4 @@
+import charty/models/file.{servedir}
 import charty/router
 import charty/web.{Context}
 import gleam/erlang/process
@@ -7,7 +8,12 @@ import wisp
 pub fn main() {
   wisp.configure_logger()
 
-  let ctx = Context(static_directory: static_directory(), files: [])
+  let ctx =
+    Context(
+      static_directory: static_directory(),
+      uploads: upload_directory(),
+      files: [],
+    )
 
   let handler = router.handle_request(_, ctx)
 
@@ -20,6 +26,11 @@ pub fn main() {
     |> mist.start_http
 
   process.sleep_forever()
+}
+
+fn upload_directory() {
+  let assert Ok(priv_directory) = wisp.priv_directory("charty")
+  priv_directory <> servedir
 }
 
 fn static_directory() {

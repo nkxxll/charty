@@ -4,5 +4,6 @@
 erl_crash.dump
 files
 priv/static/files
+priv/uploads
 .direnv
 .envrc

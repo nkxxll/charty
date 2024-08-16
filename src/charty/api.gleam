@@ -1,11 +1,8 @@
-import charty/api/database.{save}
-import charty/models/file.{type File, basedir, create_file}
+import charty/models/file.{create_file}
 import charty/web.{type Context}
 import gleam/io
-import gleam/json
 import gleam/list
 import gleam/result
-import gleam/string
 import simplifile.{copy_file}
 import wisp.{type Request}
 
@@ -30,38 +27,19 @@ pub fn upload(req: Request, ctx: Context) {
       <> " upfile file name: "
       <> upfile.file_name,
     )
-    let path = basedir <> "/" <> file_name
-    let new_item = create_file(file_name, path)
+    // TODO: check that file is jpg, png or svg
+    let new_item = create_file(file_name)
     // copy the file to files dir does not work
-    let _ = copy_file(upfile.path, path)
-    list.append(current_files, [new_item])
-    |> todos_to_json
-    |> Ok
+    let _ = copy_file(upfile.path, new_item.path)
+    Ok(Nil)
   }
 
   case result {
-    Ok(todos) -> {
+    Ok(_) -> {
       wisp.redirect("/")
-      |> wisp.set_cookie(req, "files", todos, wisp.PlainText, 60 * 60 * 24)
     }
     Error(_) -> {
       wisp.bad_request()
     }
   }
-}
-
-fn todos_to_json(items: List(File)) -> String {
-  "["
-  <> items
-  |> list.map(item_to_json)
-  |> string.join(",")
-  <> "]"
-}
-
-fn item_to_json(item: File) -> String {
-  json.object([
-    #("name", json.string(item.name)),
-    #("path", json.string(item.path)),
-  ])
-  |> json.to_string
 }

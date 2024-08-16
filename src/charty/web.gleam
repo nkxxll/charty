@@ -4,7 +4,7 @@ import gleam/string_builder
 import wisp
 
 pub type Context {
-  Context(static_directory: String, files: List(File))
+  Context(static_directory: String, uploads: String, files: List(File))
 }
 
 pub fn middleware(
@@ -14,6 +14,7 @@ pub fn middleware(
 ) -> wisp.Response {
   let req = wisp.method_override(req)
   use <- wisp.serve_static(req, under: "/static", from: ctx.static_directory)
+  use <- wisp.serve_static(req, under: "/uploads", from: ctx.uploads)
   use <- wisp.log_request(req)
   use <- wisp.rescue_crashes
   use req <- wisp.handle_head(req)

@@ -1,9 +1,9 @@
 import lustre/attribute.{
-  accept, action, autofocus, enctype, id, method, name, placeholder, type_,
-  value,
+  accept, action, autofocus, class, enctype, id, method, name, placeholder,
+  type_, value,
 }
 import lustre/element.{type Element}
-import lustre/element/html.{form, input}
+import lustre/element/html.{div, form, input}
 
 pub fn root() -> Element(t) {
   html.div([], [html.h1([], [html.text("Upload"), file_upload()])])
@@ -16,7 +16,7 @@ fn file_upload() -> Element(t) {
       method("POST"),
       action("/api/upload"),
       enctype("multipart/form-data"),
-      accept(["*"]),
+      accept(["image/jpg", "image/png", "image/svg"]),
     ],
     [
       input([
@@ -31,7 +31,9 @@ fn file_upload() -> Element(t) {
         id("add_file"),
         enctype("multipart/form-data"),
       ]),
-      input([type_("submit"), id("add_file"), value("submit")]),
+      div([class("fg-white bg-blue rounded")], [
+        input([type_("submit"), id("add_file"), value("submit")]),
+      ]),
     ],
   )
 }

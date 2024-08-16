@@ -1,3 +1,4 @@
+import charty/api/database
 import charty/models/file.{create_file}
 import charty/web.{type Context}
 import gleam/io
@@ -12,10 +13,11 @@ pub fn upload(req: Request, ctx: Context) {
   use form <- wisp.require_form(req)
 
   let current_files = ctx.files
+  io.print("current files: ")
   io.debug(current_files)
-  io.debug("form values: ")
+  io.print("form values: ")
   io.debug(form.values)
-  io.debug("form files: ")
+  io.print("form files: ")
   io.debug(form.files)
 
   let result = {
@@ -42,4 +44,13 @@ pub fn upload(req: Request, ctx: Context) {
       wisp.bad_request()
     }
   }
+}
+
+pub fn builder(req: Request, ctx: Context) {
+  use form <- wisp.require_form(req)
+
+  io.print("form values: ")
+  io.debug(form.values)
+  io.print("form files: ")
+  io.debug(form.files)
 }

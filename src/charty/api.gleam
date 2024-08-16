@@ -10,22 +10,30 @@ import simplifile.{copy_file}
 import wisp.{type Request}
 
 pub fn upload(req: Request, ctx: Context) {
+  io.debug(req.headers)
+  io.debug(req.body)
   use form <- wisp.require_form(req)
 
   let current_files = ctx.files
   io.debug(current_files)
+  io.debug("form values: ")
   io.debug(form.values)
+  io.debug("form files: ")
   io.debug(form.files)
 
   let result = {
     use file_name <- result.try(list.key_find(form.values, "file_name"))
-    // FIXME: this does not work because the file is not transmitted
-    use upfile <- result.try(list.key_find(form.values, "file_content"))
-    io.debug("upload file path: " <> upfile)
+    use upfile <- result.try(list.key_find(form.files, "file_content"))
+    io.debug(
+      "upload file path: "
+      <> upfile.path
+      <> " upfile file name: "
+      <> upfile.file_name,
+    )
     let path = basedir <> "/" <> file_name
     let new_item = create_file(file_name, path)
     // copy the file to files dir does not work
-    let _ = copy_file(upfile, path)
+    let _ = copy_file(upfile.path, path)
     list.append(current_files, [new_item])
     |> todos_to_json
     |> Ok

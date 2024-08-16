@@ -1,8 +1,8 @@
 import charty/models/file.{type File}
 import gleam/list
-import lustre/attribute.{class}
+import lustre/attribute.{class, href}
 import lustre/element.{type Element, text}
-import lustre/element/html.{div, h1, li, ul}
+import lustre/element/html.{a, div, h1, li, ul}
 
 pub fn root(items: List(File)) -> Element(t) {
   div([class("app")], [
@@ -16,5 +16,5 @@ fn files(files: List(File)) -> Element(t) {
 }
 
 fn file(file: File) -> Element(t) {
-  li([], [text(file.name <> " :at: " <> file.path)])
+  li([], [text(file.name <> " :at: "), a([href(file.path)], [text(file.path)])])
 }

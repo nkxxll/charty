@@ -46,11 +46,36 @@ pub fn upload(req: Request, ctx: Context) {
   }
 }
 
-pub fn builder(req: Request, ctx: Context) {
+pub fn builder(req: Request, _ctx: Context) {
   use form <- wisp.require_form(req)
 
   io.print("form values: ")
   io.debug(form.values)
   io.print("form files: ")
   io.debug(form.files)
+
+  let result = {
+    use dash_name <- result.try(list.key_find(form.values, "dash_name"))
+    let rest =
+      form.values
+      |> list.filter(fn(a) {
+        let #(key, _) = a
+        key != dash_name
+      })
+      |> list.map(fn(a) {
+        let #(_key, value) = a
+        create_file(value)
+      })
+    database.insert_dashboard1(dash_name, rest)
+    Ok(Nil)
+  }
+
+  case result {
+    Ok(_) -> {
+      wisp.redirect("/")
+    }
+    Error(_) -> {
+      wisp.bad_request()
+    }
+  }
 }

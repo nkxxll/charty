@@ -13,6 +13,7 @@ pub fn main() {
       static_directory: static_directory(),
       uploads: upload_directory(),
       files: [],
+      dashs: [],
     )
 
   let handler = router.handle_request(_, ctx)

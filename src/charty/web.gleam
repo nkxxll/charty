@@ -4,7 +4,12 @@ import gleam/string_builder
 import wisp
 
 pub type Context {
-  Context(static_directory: String, uploads: String, files: List(File))
+  Context(
+    static_directory: String,
+    uploads: String,
+    files: List(File),
+    dashs: List(#(Int, String)),
+  )
 }
 
 pub fn middleware(

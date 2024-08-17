@@ -31,7 +31,7 @@ pub fn insert_dashboard1(name: String, flist: List(File)) {
 }
 
 /// insert a two dimensional list to the database
-pub fn insert_dashboard2(name: String, flist: List(List(File))) {
+pub fn insert_dashboard2(name: String, flist: List(List(File))) -> Nil {
   let string =
     flist
     |> list.map(db_string_from_flist)
@@ -49,6 +49,7 @@ fn insert(name: String, string: String) {
     <> string
     <> ")"
   let assert Ok(Nil) = sqlight.exec(sql, conn)
+  Nil
 }
 
 fn db_string_from_flist(flist: List(File)) {

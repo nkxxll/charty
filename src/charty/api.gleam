@@ -3,6 +3,7 @@ import charty/models/file.{create_file}
 import charty/web.{type Context}
 import gleam/io
 import gleam/list
+import gleam/option.{None}
 import gleam/result
 import simplifile.{copy_file}
 import wisp.{type Request}
@@ -66,7 +67,7 @@ pub fn builder(req: Request, _ctx: Context) {
         let #(_key, value) = a
         create_file(value)
       })
-    database.insert_dashboard1(dash_name, rest)
+    database.insert_dashboard1(dash_name, rest, None)
     Ok(Nil)
   }
 

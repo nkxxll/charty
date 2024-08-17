@@ -1,10 +1,11 @@
 import charty/models/file.{type File, create_file}
 import gleam/dynamic
 import gleam/list
+import gleam/option.{type Option, None, Some}
 import gleam/string
 import sqlight
 
-const database = ":memory:"
+const default_database = ":memory:"
 
 pub type FileList {
   SingleList(List(File))
@@ -14,7 +15,11 @@ pub type FileList {
 /// save a file in the file system
 /// the file is uploaded via a form
 /// files are saved in ./files/<title>
-pub fn create_tables() {
+pub fn create_tables(db: Option(String)) {
+  let database = case db {
+    Some(database) -> database
+    None -> default_database
+  }
   use conn <- sqlight.with_connection(database)
   let sql =
     "CREATE TABLE IF NOT EXISTS dashboards (
@@ -22,24 +27,33 @@ pub fn create_tables() {
     dash TEXT
     )"
   let assert Ok(Nil) = sqlight.exec(sql, conn)
+  Nil
 }
 
 /// insert a one dimensional list to the database
-pub fn insert_dashboard1(name: String, flist: List(File)) {
+pub fn insert_dashboard1(name: String, flist: List(File), db: Option(String)) {
   let string = db_string_from_flist(flist)
-  insert(name, string)
+  insert(name, string, db)
 }
 
 /// insert a two dimensional list to the database
-pub fn insert_dashboard2(name: String, flist: List(List(File))) -> Nil {
+pub fn insert_dashboard2(
+  name: String,
+  flist: List(List(File)),
+  db: Option(String),
+) -> Nil {
   let string =
     flist
     |> list.map(db_string_from_flist)
     |> list.fold("", fn(a, b) { a <> ";" <> b })
-  insert(name, string)
+  insert(name, string, db)
 }
 
-fn insert(name: String, string: String) {
+fn insert(name: String, string: String, db: Option(String)) {
+  let database = case db {
+    Some(database) -> database
+    None -> default_database
+  }
   use conn <- sqlight.with_connection(database)
 
   let sql =
@@ -58,7 +72,11 @@ fn db_string_from_flist(flist: List(File)) {
   |> list.fold("", fn(a, b) { a <> "," <> b })
 }
 
-pub fn read_dash(id: Int) -> #(Int, String, FileList) {
+pub fn read_dash(id: Int, db: Option(String)) -> #(Int, String, FileList) {
+  let database = case db {
+    Some(database) -> database
+    None -> default_database
+  }
   use conn <- sqlight.with_connection(database)
   let dash_decoder = dynamic.tuple3(dynamic.int, dynamic.string, dynamic.string)
   let sql = "SELECT * FROM dashboards WHERE id == ?"
@@ -75,7 +93,11 @@ pub fn read_dash(id: Int) -> #(Int, String, FileList) {
   }
 }
 
-pub fn read_all_dashs() -> List(#(Int, String, FileList)) {
+pub fn read_all_dashs(db: Option(String)) -> List(#(Int, String, FileList)) {
+  let database = case db {
+    Some(database) -> database
+    None -> default_database
+  }
   use conn <- sqlight.with_connection(database)
   let dash_decoder = dynamic.tuple3(dynamic.int, dynamic.string, dynamic.string)
   let sql = "SELECT * FROM dashboards"

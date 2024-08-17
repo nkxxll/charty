@@ -1,12 +1,17 @@
+import charty/api/database
 import charty/models/file.{servedir}
 import charty/router
 import charty/web.{Context}
 import gleam/erlang/process
+import gleam/option.{None}
 import mist
 import wisp
 
 pub fn main() {
   wisp.configure_logger()
+
+  // setup the database
+  database.create_tables(None)
 
   let ctx =
     Context(

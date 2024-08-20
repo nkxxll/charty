@@ -7,7 +7,7 @@ import gleam/option.{type Option, None, Some}
 import gleam/string
 import sqlight
 
-const default_database = ":memory:"
+const default_database = "default.sqlite"
 
 pub type FileList {
   SingleList(List(File))
@@ -140,7 +140,7 @@ pub fn read_all_dashs(db: Option(String)) -> List(#(Int, String, FileList)) {
     sqlight.query(sql, conn, with: [], expecting: dash_decoder)
   list
   |> list.map(fn(item) {
-    let #(id, name, dash) = item
+    let #(id, dash, name) = item
     let lines = string.split(dash, "-")
     case lines {
       [x] -> {

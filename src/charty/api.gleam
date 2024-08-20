@@ -61,11 +61,12 @@ pub fn builder(req: Request, _ctx: Context) {
       form.values
       |> list.filter(fn(a) {
         let #(key, _) = a
-        key != dash_name
+        io.debug("key " <> key)
+        key != "dash_name"
       })
       |> list.map(fn(a) {
-        let #(_key, value) = a
-        create_file(value)
+        let #(key, _) = a
+        create_file(key)
       })
     database.insert_dashboard1(dash_name, rest, None)
     Ok(Nil)

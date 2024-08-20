@@ -58,12 +58,13 @@ pub fn insert_and_read_test() {
   let name = "test_dash"
   database.insert_dashboard1(name, file_list, Some(test_db))
   let all_dashes = database.read_all_dashs(Some(test_db))
+  // io.debug(all_dashes)
   let fixture_location = "./fixtures/insert_and_read.txt"
   let all_dashes_string = all_dashes |> dashes_to_string
   snap(
     got: all_dashes_string,
     expected_location: fixture_location,
-    update: True,
+    update: False,
   )
   database.delete_by_name(name, Some(test_db))
   let after_delete = database.read_all_dashs(Some(test_db))
@@ -72,7 +73,7 @@ pub fn insert_and_read_test() {
   snap(
     got: after_delete_string,
     expected_location: fixture_location,
-    update: True,
+    update: False,
   )
 }
 

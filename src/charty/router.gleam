@@ -40,6 +40,12 @@ pub fn handle_request(req: Request, ctx: Context) -> Response {
       api.upload(req, ctx)
     }
 
+    ["api", "builder"] -> {
+      io.debug("calling api builder")
+      use <- wisp.require_method(req, http.Post)
+      api.builder(req, ctx)
+    }
+
     // All the empty responses
     ["internal-server-error"] -> wisp.internal_server_error()
     ["unprocessable-entity"] -> wisp.unprocessable_entity()

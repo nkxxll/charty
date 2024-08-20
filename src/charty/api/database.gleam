@@ -1,5 +1,7 @@
 import charty/models/file.{type File, create_file}
 import gleam/dynamic
+import gleam/int
+import gleam/io
 import gleam/list
 import gleam/option.{type Option, None, Some}
 import gleam/string
@@ -23,17 +25,24 @@ pub fn create_tables(db: Option(String)) {
   use conn <- sqlight.with_connection(database)
   let sql =
     "CREATE TABLE IF NOT EXISTS dashboards (
-    id INTEGER PRIMARY KEY
-    dash TEXT
+    id INTEGER PRIMARY KEY,
+    dash TEXT,
+    name TEXT
     )"
-  let assert Ok(Nil) = sqlight.exec(sql, conn)
-  Nil
+  let res = sqlight.exec(sql, conn)
+  case res {
+    Ok(Nil) -> Nil
+    Error(e) -> {
+      io.debug(e)
+      panic
+    }
+  }
 }
 
 /// insert a one dimensional list to the database
 pub fn insert_dashboard1(name: String, flist: List(File), db: Option(String)) {
-  let string = db_string_from_flist(flist)
-  insert(name, string, db)
+  let value = db_string_from_flist(flist) |> string.trim
+  insert(name, value, db)
 }
 
 /// insert a two dimensional list to the database
@@ -45,11 +54,11 @@ pub fn insert_dashboard2(
   let string =
     flist
     |> list.map(db_string_from_flist)
-    |> list.fold("", fn(a, b) { a <> ";" <> b })
+    |> list.fold("", fn(a, b) { a <> "-" <> b })
   insert(name, string, db)
 }
 
-fn insert(name: String, string: String, db: Option(String)) {
+fn insert(name: String, value: String, db: Option(String)) {
   let database = case db {
     Some(database) -> database
     None -> default_database
@@ -57,11 +66,37 @@ fn insert(name: String, string: String, db: Option(String)) {
   use conn <- sqlight.with_connection(database)
 
   let sql =
-    "INSERT INTO dashboards (name, dash) VALUE ("
+    "INSERT INTO dashboards (name, dash) VALUES ('"
     <> name
-    <> ", "
-    <> string
-    <> ")"
+    <> "', '"
+    <> value
+    <> "');"
+
+  io.debug(sql)
+  let assert Ok(Nil) = sqlight.exec(sql, conn)
+  Nil
+}
+
+pub fn delete_by_id(id id: Int, db db: Option(String)) {
+  let database = case db {
+    Some(database) -> database
+    None -> default_database
+  }
+  use conn <- sqlight.with_connection(database)
+
+  let sql = "DELETE FROM dashboards WHERE id = '" <> id |> int.to_string <> "';"
+  let assert Ok(Nil) = sqlight.exec(sql, conn)
+  Nil
+}
+
+pub fn delete_by_name(name name: String, db db: Option(String)) {
+  let database = case db {
+    Some(database) -> database
+    None -> default_database
+  }
+  use conn <- sqlight.with_connection(database)
+
+  let sql = "DELETE FROM dashboards WHERE name = '" <> name <> "';"
   let assert Ok(Nil) = sqlight.exec(sql, conn)
   Nil
 }
@@ -69,7 +104,7 @@ fn insert(name: String, string: String, db: Option(String)) {
 fn db_string_from_flist(flist: List(File)) {
   flist
   |> list.map(fn(f) { f.name })
-  |> list.fold("", fn(a, b) { a <> "," <> b })
+  |> list.fold("", fn(a, b) { a <> " " <> b })
 }
 
 pub fn read_dash(id: Int, db: Option(String)) -> #(Int, String, FileList) {
@@ -106,7 +141,7 @@ pub fn read_all_dashs(db: Option(String)) -> List(#(Int, String, FileList)) {
   list
   |> list.map(fn(item) {
     let #(id, name, dash) = item
-    let lines = string.split(dash, ";")
+    let lines = string.split(dash, "-")
     case lines {
       [x] -> {
         let fl = line_to_file_list(x) |> SingleList
@@ -122,5 +157,5 @@ pub fn read_all_dashs(db: Option(String)) -> List(#(Int, String, FileList)) {
 
 /// assume this is a , separated line
 fn line_to_file_list(line: String) -> List(File) {
-  line |> string.split(",") |> list.map(create_file)
+  line |> string.split(" ") |> list.map(create_file)
 }

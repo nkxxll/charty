@@ -7,3 +7,4 @@ priv/static/files
 priv/uploads
 .direnv
 .envrc
+*.sqlite

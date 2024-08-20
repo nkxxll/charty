@@ -1,0 +1,4 @@
+
+0;id;INTEGER;0;1
+1;dash;TEXT;0;0
+2;name;TEXT;0;0

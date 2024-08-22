@@ -128,6 +128,19 @@ pub fn read_dash(id: Int, db: Option(String)) -> #(Int, String, FileList) {
   }
 }
 
+pub fn read_all_id_name(db: Option(String)) -> List(#(Int, String)) {
+  let database = case db {
+    Some(database) -> database
+    None -> default_database
+  }
+  use conn <- sqlight.with_connection(database)
+  let dash_decoder = dynamic.tuple2(dynamic.int, dynamic.string)
+  let sql = "SELECT id, name FROM dashboards;"
+  let assert Ok(list) =
+    sqlight.query(sql, conn, with: [], expecting: dash_decoder)
+  list
+}
+
 pub fn read_all_dashs(db: Option(String)) -> List(#(Int, String, FileList)) {
   let database = case db {
     Some(database) -> database

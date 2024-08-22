@@ -14,6 +14,11 @@ pub type FileList {
   DoubleList(List(List(File)))
 }
 
+pub type Identifier {
+  ID(Int)
+  Name(String)
+}
+
 /// save a file in the file system
 /// the file is uploaded via a form
 /// files are saved in ./files/<title>
@@ -107,20 +112,44 @@ fn db_string_from_flist(flist: List(File)) {
   |> list.fold("", fn(a, b) { a <> " " <> b })
 }
 
-pub fn read_dash(id: Int, db: Option(String)) -> #(Int, String, FileList) {
+pub fn read_dash(
+  identifier: Identifier,
+  db: Option(String),
+) -> #(Int, String, FileList) {
   let database = case db {
     Some(database) -> database
     None -> default_database
   }
   use conn <- sqlight.with_connection(database)
   let dash_decoder = dynamic.tuple3(dynamic.int, dynamic.string, dynamic.string)
-  let sql = "SELECT * FROM dashboards WHERE id == ?"
-  let assert Ok(list) =
-    sqlight.query(sql, conn, with: [sqlight.int(id)], expecting: dash_decoder)
+  let list = case identifier {
+    ID(id) -> {
+      let sql = "SELECT * FROM dashboards WHERE id == ?"
+      let assert Ok(list) =
+        sqlight.query(
+          sql,
+          conn,
+          with: [sqlight.int(id)],
+          expecting: dash_decoder,
+        )
+      list
+    }
+    Name(name) -> {
+      let sql = "SELECT * FROM dashboards WHERE name == ?"
+      let assert Ok(list) =
+        sqlight.query(
+          sql,
+          conn,
+          with: [sqlight.text(name)],
+          expecting: dash_decoder,
+        )
+      list
+    }
+  }
   case list {
     [] -> #(-1, "", SingleList([]))
     [x] -> {
-      let #(id, name, files) = x
+      let #(id, files, name) = x
       let fl = line_to_file_list(files) |> SingleList
       #(id, name, fl)
     }

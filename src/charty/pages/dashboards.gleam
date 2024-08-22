@@ -24,6 +24,6 @@ fn dashboard_items(dashboard: #(Int, String)) -> Element(t) {
   let a_style = class("text-blue-600 hover:underline m-2")
   li([list_item_style], [
     span([span_style], [text(int.to_string(id))]),
-    a([href("#"), a_style], [text(name)]),
+    a([href("/dashboard/" <> name), a_style], [text(name)]),
   ])
 }

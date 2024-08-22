@@ -42,6 +42,13 @@ pub fn handle_request(req: Request, ctx: Context) -> Response {
       |> wisp.html_response(200)
     }
 
+    ["dashboard", name] -> {
+      [pages.dash_from_name(name)]
+      |> layout
+      |> element.to_document_string_builder
+      |> wisp.html_response(200)
+    }
+
     ["api", "upload"] -> {
       use <- wisp.require_method(req, http.Post)
       api.upload(req, ctx)

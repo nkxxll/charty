@@ -22,7 +22,7 @@ pub fn layout(elements: List(Element(t))) -> Element(t) {
     ])
   html.html([], [
     html.head([], [
-      html.title([], "Todo App in Gleam"),
+      html.title([], "Charty a Dashboard Builder"),
       html.meta([
         attribute.name("viewport"),
         attribute.attribute("content", "width=device-width, initial-scale=1"),

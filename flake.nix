@@ -20,7 +20,7 @@
     }: {
       devShells = {
         default = pkgs.mkShell {
-          buildInputs = with pkgs; [gleam erlang_27 rebar3];
+          buildInputs = with pkgs; [sqlite gleam erlang_27 rebar3];
         };
       };
     };

@@ -13,7 +13,9 @@ pub fn root(items: List(File)) -> Element(t) {
 }
 
 fn files(files: List(File)) -> Element(t) {
-  ul([style([global.unorderd_list])], files |> list.map(file))
+  div([style([global.unorderd_list_div])], [
+    ul([style([global.unorderd_list])], files |> list.map(file)),
+  ])
 }
 
 fn file(f: File) -> Element(t) {

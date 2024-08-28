@@ -1,25 +1,22 @@
+import charty/styles/global.{style}
 import gleam/list
 import lustre/attribute
 import lustre/element.{type Element}
 import lustre/element/html
 
 pub fn layout(elements: List(Element(t))) -> Element(t) {
-  let navbar_style =
-    attribute.class("bg-gray-800 p-4 flex justify-between items-center")
-  let navbar_element_style =
-    attribute.class(
-      "text-white hover:bg-gray-700 hover:text-gray-300 px-3 py-2 rounded-md text-sm font-medium",
-    )
   let navbar: Element(t) =
-    html.nav([navbar_style], [
-      html.a([navbar_element_style, attribute.href("/")], [html.text("home")]),
-      html.a([navbar_element_style, attribute.href("/upload")], [
+    html.nav([style([global.navbar])], [
+      html.a([style([global.navbar_item]), attribute.href("/")], [
+        html.text("home"),
+      ]),
+      html.a([style([global.navbar_item]), attribute.href("/upload")], [
         html.text("upload"),
       ]),
-      html.a([navbar_element_style, attribute.href("/builder")], [
+      html.a([style([global.navbar_item]), attribute.href("/builder")], [
         html.text("builder"),
       ]),
-      html.a([navbar_element_style, attribute.href("/dashboards")], [
+      html.a([style([global.navbar_item]), attribute.href("/dashboards")], [
         html.text("dashboards"),
       ]),
     ])

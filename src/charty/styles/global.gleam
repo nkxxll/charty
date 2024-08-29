@@ -19,6 +19,8 @@ pub const list_span = "flex-1 text-gray-700 font-large font-bold"
 
 pub const dash_img_span = "flex-1 text-gray-700 font-medium"
 
+pub const dash_header_part = "flex-1 text-gray-700 font-medium"
+
 pub const list_checkbox = "form-checkbox h-10 w-10 text-blue-600"
 
 pub const dash_container = "flex flex-row"

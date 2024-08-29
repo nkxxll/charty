@@ -53,9 +53,11 @@ pub fn root(name: String) -> Element(t) {
 fn display_dash(dash: Dash) -> Element(t) {
   let mi = dash.files |> max_items
   div([], [
-    div([style([global.header_style, "mx-10"])], [
-      text("ID: " <> int.to_string(dash.id)),
-      text(dash.name),
+    div([style([global.header_style])], [
+      span([style([global.dash_header_part, "mr-4"])], [
+        text("ID: " <> int.to_string(dash.id)),
+      ]),
+      span([style([global.dash_header_part])], [text(dash.name)]),
     ]),
     div(
       [style([global.dash_container, "max-items-" <> int.to_string(mi)])],
@@ -67,32 +69,42 @@ fn display_dash(dash: Dash) -> Element(t) {
 fn display_images(files: FileList) -> List(Element(t)) {
   case files {
     SingleList(single) -> {
+      let length = single |> list.length
       single
-      |> list.map(fn(a) { display_single_image(a) })
+      |> list.map(fn(a) { display_single_image(a, length) })
     }
     DoubleList(double) -> {
+      let length = double |> list.length
       double
       |> list.map(fn(a) {
         a
-        |> list.map(fn(b) { display_single_image(b) })
+        |> list.map(fn(b) { display_single_image(b, length) })
       })
       |> list.concat
     }
   }
 }
 
-fn display_single_image(f: File) -> Element(t) {
+fn display_single_image(f: File, length: Int) -> Element(t) {
   let img_src = src(f.serve_path)
   let alt_text = alt(f.name)
-  div([style([global.dash_img_container])], [
-    img([
-      attribute("onclick", "toggleFullscreen(this)"),
-      style([global.dash_row_img]),
-      img_src,
-      alt_text,
-    ]),
-    span([style([global.dash_img_span])], [text(f.name)]),
-  ])
+  div(
+    [
+      style([
+        global.dash_img_container,
+        "w-[" <> int.to_string(100 / length) <> "%]",
+      ]),
+    ],
+    [
+      img([
+        attribute("onclick", "toggleFullscreen(this)"),
+        style([global.dash_row_img]),
+        img_src,
+        alt_text,
+      ]),
+      span([style([global.dash_img_span])], [text(f.name)]),
+    ],
+  )
 }
 
 fn max_items(fl: FileList) -> Int {

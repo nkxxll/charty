@@ -27,6 +27,10 @@ pub const dash_img_container = "flex flex-col items-center"
 
 pub const dash_row_img = "rounded-lg shadow-md object-cover w-[95%]"
 
+pub const fullscreen_img_container = "hidden fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"
+
+pub const fullscreen_img = "max-w-full max-h-full cursor-pointer"
+
 pub const list_item = "flex items-center p-4"
 
 pub const unorderd_list = "bg-white shadow-lg rounded-lg divide-y divide-gray-200"

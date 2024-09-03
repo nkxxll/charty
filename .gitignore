@@ -4,7 +4,7 @@
 erl_crash.dump
 files
 priv/static/files
-priv/uploads
+priv/uploads/*
 .direnv
 .envrc
 *.sqlite

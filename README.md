@@ -16,11 +16,13 @@ gleam test  # Run the tests
 
 ## Features
 
-- [ ] improve `README.md`
+- [x] improve `README.md`
 - [x] zoom into images on click
-- [ ] fix the image spacing
+- [ ] only read files from the uploads directory that are images
+- [ ] check if the images are images on upload on the server side else error
+- [x] fix the image spacing
 - [ ] make dashboards with multiple rows of images
-- [ ] clean up the styles (low priority for now)
+- [x] clean up the styles (low priority for now)
 - [ ] do Hex Docs
 - [ ] do Package version
 
